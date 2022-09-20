@@ -26,7 +26,6 @@ def device_found(
         ibeacon = ibeacon_format.parse(apple_data)
         uuid = UUID(bytes=bytes(ibeacon.uuid))
         #print(ibeacon.power, device.rssi)
-        ratio =((int(ibeacon.power)-int(device.rssi))/(10*2.4))
         distance= math.pow(10, (ibeacon.power - device.rssi) / (10 * 2.4))
         
         print(f"""
