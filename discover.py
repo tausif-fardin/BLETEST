@@ -1,6 +1,6 @@
 import asyncio
 from uuid import UUID
-
+import math
 from construct import Array, Byte, Const, Int8sl, Int16ub, Struct
 from construct.core import ConstError
 
@@ -26,11 +26,12 @@ def device_found(
         ibeacon = ibeacon_format.parse(apple_data)
         uuid = UUID(bytes=bytes(ibeacon.uuid))
         #print(ibeacon.power, device.rssi)
-        ratio =((int(ibeacon.power)-int(device.rssi))/20)
-        distance= ratio**10
+        ratio =((int(ibeacon.power)-int(device.rssi))/(10*2.4))
+        distance= math.pow(10, (ibeacon.power - device.rssi) / (10 * 2.4))
         
         print(f"""
 UUID     : {uuid}
+Address : {device.address}
 Major    : {ibeacon.major}
 Minor : {ibeacon.minor}
 Tx Power : {ibeacon.power} dBm
@@ -53,7 +54,7 @@ async def main():
 
     while True:
         await scanner.start()
-        await asyncio.sleep(5.0)
+        await asyncio.sleep(10.0)
         await scanner.stop()
 
 
